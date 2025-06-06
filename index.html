@@ -3,10 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <link rel="apple-touch-icon" href="icons/icon-192.png" />
-   <header>
-    <img src="icons/icon-192.png">
-    </header><title>Ethan's Soccer & Workout Journal</title>
+  <title>Ethan's Soccer & Workout Journal</title>
   <style>
     body {
       background-color: #1a1a1a;
@@ -113,12 +110,11 @@
       <h2>🏁 Final Quote of the Year</h2>
       <p id="finalQuote">You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi</p>
     </div>
-<footer>
-    &copy; Ethan's Soccer Journey. All rights reserved.
-  </footer>
+
     <script>
-      const startDate = new Date('2025-06-06');
+      const startDate = new Date('2025-06-01');
       const today = new Date();
+      const todayISO = today.toISOString().split('T')[0];
       const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
       const calendarContainer = document.getElementById("calendarContainer");
@@ -142,16 +138,19 @@
           grid.className = "calendar-grid";
 
           for (let d = 1; d <= daysInMonth; d++) {
+            const date = new Date(year, month, d);
+            const iso = date.toISOString().split('T')[0];
             totalDays++;
             if (totalDays > 730) break;
 
             const cell = document.createElement("div");
             cell.className = "btn calendar-cell";
-            const completed = localStorage.getItem(`completed-${totalDays}`);
-            if (totalDays === todayNum) cell.classList.add("today");
+            const completed = localStorage.getItem(`completed-${iso}`);
+            if (iso === todayISO) cell.classList.add("today");
             if (completed) cell.classList.add("completed");
-            cell.textContent = totalDays;
-            cell.onclick = () => window.location.href = `day.html?day=${totalDays}`;
+            const label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            cell.textContent = label;
+            cell.onclick = () => window.location.href = `day.html?date=${iso}`;
             grid.appendChild(cell);
           }
 
@@ -161,8 +160,8 @@
       }
 
       const summaryEl = document.getElementById("todaySummary");
-      const summaryKey = `exercises-${todayNum}`;
-      const notesKey = `notes-${todayNum}`;
+      const summaryKey = `exercises-${todayISO}`;
+      const notesKey = `notes-${todayISO}`;
       const workout = JSON.parse(localStorage.getItem(summaryKey) || "null");
       const notes = localStorage.getItem(notesKey);
 

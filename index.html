@@ -32,24 +32,33 @@
       margin-bottom: 1rem;
       box-shadow: 0 2px 5px rgba(0,255,150,0.2);
     }
-    $1
-  transition: transform 0.2s ease, box-shadow 0.2s ease;}
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
       gap: 0.5rem;
     }
-    $1
-
-.btn.calendar-cell:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 10px #33fff3, 0 0 20px #ff33cc;
-}
+    .btn.calendar-cell {
+      background-color: #ff33cc;
+      padding: 0.75rem;
+      text-align: center;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      color: #33fff3;
+      text-shadow: 0 0 2px #ff33cc;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn.calendar-cell:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 10px #33fff3, 0 0 20px #ff33cc;
+    }
     .calendar-cell.completed {
       background-color: #33ff66;
+      animation: fadeIn 0.3s ease-in-out;
     }
     .calendar-cell.today {
       border: 2px solid #33fff3;
+      animation: pulse 2s infinite;
     }
     h2 {
       color: #33fff3;
@@ -59,26 +68,16 @@
       color: #33fff3;
       text-shadow: 0 0 2px #ff33cc;
     }
-  @keyframes pulse {
-  0% { box-shadow: 0 0 0px #ff33cc; }
-  50% { box-shadow: 0 0 12px #ff33cc; }
-  100% { box-shadow: 0 0 0px #ff33cc; }
-}
-
-.btn.calendar-cell.today {
-  animation: pulse 2s infinite;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0.3; }
-  to { opacity: 1; }
-}
-
-.calendar-cell.completed {
-  animation: fadeIn 0.3s ease-in-out;
-}
-
-$1
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0px #ff33cc; }
+      50% { box-shadow: 0 0 12px #ff33cc; }
+      100% { box-shadow: 0 0 0px #ff33cc; }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0.3; }
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
   <header>Ethan's Soccer & Workout Journal</header>
@@ -98,84 +97,108 @@ $1
     </div>
 
     <div class="card">
+      <h2>🔥 Soccer Drills of the Day</h2>
+      <ul id="drillsList"></ul>
+    </div>
+
+    <div class="card">
       <h2>📆 365-Day Workout Calendar</h2>
       <div id="calendarContainer"></div>
-    $1
+    </div>
+
     <div class="card">
       <h2>🏁 Final Quote of the Year</h2>
       <p id="finalQuote">You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi</p>
     </div>
-<script>
-    const startDate = new Date('2025-06-01');
-    const today = new Date();
-    const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
-    const calendarContainer = document.getElementById("calendarContainer");
-    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    <script>
+      const startDate = new Date('2025-06-01');
+      const today = new Date();
+      const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
-    let totalDays = 0;
-let startYear = 2025;
-let numYears = 2;
+      const calendarContainer = document.getElementById("calendarContainer");
+      const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-for (let y = 0; y < numYears; y++) {
-  const year = startYear + y;
-  for (let month = 0; month < 12; month++) {
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const monthCard = document.createElement("div");
-    monthCard.className = "card";
-    const title = document.createElement("h3");
-    title.textContent = `${monthNames[month]} ${year}`;
-    monthCard.appendChild(title);
+      let totalDays = 0;
+      let startYear = 2025;
+      let numYears = 2;
 
-    const grid = document.createElement("div");
-    grid.className = "calendar-grid";
+      for (let y = 0; y < numYears; y++) {
+        const year = startYear + y;
+        for (let month = 0; month < 12; month++) {
+          const daysInMonth = new Date(year, month + 1, 0).getDate();
+          const monthCard = document.createElement("div");
+          monthCard.className = "card";
+          const title = document.createElement("h3");
+          title.textContent = `${monthNames[month]} ${year}`;
+          monthCard.appendChild(title);
 
-    for (let d = 1; d <= daysInMonth; d++) {
-      totalDays++;
-      if (totalDays > 730) break;
+          const grid = document.createElement("div");
+          grid.className = "calendar-grid";
 
-      const cell = document.createElement("div");
-      cell.className = "btn calendar-cell";
-      const completed = localStorage.getItem(`completed-${totalDays}`);
-      if (totalDays === todayNum) cell.classList.add("today");
-      if (completed) cell.classList.add("completed");
-      cell.textContent = totalDays;
-      cell.onclick = () => window.location.href = `day.html?day=${totalDays}`;
-      grid.appendChild(cell);
-    }
+          for (let d = 1; d <= daysInMonth; d++) {
+            totalDays++;
+            if (totalDays > 730) break;
 
-    monthCard.appendChild(grid);
-    calendarContainer.appendChild(monthCard);
-  }
-}
+            const cell = document.createElement("div");
+            cell.className = "btn calendar-cell";
+            const completed = localStorage.getItem(`completed-${totalDays}`);
+            if (totalDays === todayNum) cell.classList.add("today");
+            if (completed) cell.classList.add("completed");
+            cell.textContent = totalDays;
+            cell.onclick = () => window.location.href = `day.html?day=${totalDays}`;
+            grid.appendChild(cell);
+          }
 
-    const summaryEl = document.getElementById("todaySummary");
-    const summaryKey = `exercises-${todayNum}`;
-    const notesKey = `notes-${todayNum}`;
-    const workout = JSON.parse(localStorage.getItem(summaryKey) || "null");
-    const notes = localStorage.getItem(notesKey);
+          monthCard.appendChild(grid);
+          calendarContainer.appendChild(monthCard);
+        }
+      }
 
-    if (workout && workout.length) {
-      summaryEl.innerHTML = `<ul>${workout.map(e => `<li>${e.name}</li>`).join('')}</ul>` + (notes ? `<p><strong>Notes:</strong><br>${notes}</p>` : "");
-    } else {
-      summaryEl.textContent = "No workouts currently added";
-    }
-  
-    const soccerQuotes = [
-      "The more difficult the victory, the greater the happiness in winning. – Pelé",
-      "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice and most of all, love of what you are doing. – Pelé",
-      "Every disadvantage has its advantage. – Johan Cruyff",
-      "The ball is round, the game lasts ninety minutes, and everything else is just theory. – Sepp Herberger",
-      "I don't believe skill was, or ever will be, the result of coaches. It is a result of a love affair between the child and the ball. – Roy Keane",
-      "You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi",
-      "If you do not believe you can do it then you have no chance at all. – Arsène Wenger",
-      "I learned all about life with a ball at my feet. – Ronaldinho",
-      "Some people believe football is a matter of life and death. I can assure you it is much, much more important than that. – Bill Shankly",
-      "You have to play with fear and passion. – Eric Cantona"
-    ];
+      const summaryEl = document.getElementById("todaySummary");
+      const summaryKey = `exercises-${todayNum}`;
+      const notesKey = `notes-${todayNum}`;
+      const workout = JSON.parse(localStorage.getItem(summaryKey) || "null");
+      const notes = localStorage.getItem(notesKey);
 
-    const quoteIndex = todayNum % soccerQuotes.length;
-    document.getElementById("quoteOfDay").textContent = soccerQuotes[quoteIndex];
-  </script>
+      if (workout && workout.length) {
+        summaryEl.innerHTML = `<ul>${workout.map(e => `<li>${e.name}</li>`).join('')}</ul>` + (notes ? `<p><strong>Notes:</strong><br>${notes}</p>` : "");
+      } else {
+        summaryEl.textContent = "No workouts currently added";
+      }
+
+      const soccerQuotes = [
+        "The more difficult the victory, the greater the happiness in winning. – Pelé",
+        "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice and most of all, love of what you are doing. – Pelé",
+        "Every disadvantage has its advantage. – Johan Cruyff",
+        "The ball is round, the game lasts ninety minutes, and everything else is just theory. – Sepp Herberger",
+        "I don't believe skill was, or ever will be, the result of coaches. It is a result of a love affair between the child and the ball. – Roy Keane",
+        "You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi",
+        "If you do not believe you can do it then you have no chance at all. – Arsène Wenger",
+        "I learned all about life with a ball at my feet. – Ronaldinho",
+        "Some people believe football is a matter of life and death. I can assure you it is much, much more important than that. – Bill Shankly",
+        "You have to play with fear and passion. – Eric Cantona"
+      ];
+      const quoteIndex = todayNum % soccerQuotes.length;
+      document.getElementById("quoteOfDay").textContent = soccerQuotes[quoteIndex];
+
+      const soccerDrills = [
+        { name: "Cone Weave to Looped Gate", url: "https://www.youtube.com/watch?v=z7jP3moQi9c" },
+        { name: "Ronaldinho to Move at Cone", url: "https://www.youtube.com/watch?v=z7jP3moQi9c" },
+        { name: "T-Cone Weave", url: "https://www.youtube.com/watch?v=z7jP3moQi9c" },
+        { name: "Inside and Outside Touches", url: "https://www.soccerdrive.com/soccer-skills-videos" },
+        { name: "Lateral Rolls", url: "https://www.soccerdrive.com/soccer-skills-videos" },
+        { name: "Forwards & Backwards Roll", url: "https://www.soccerdrive.com/soccer-skills-videos" },
+        { name: "Tick Tock (Foundations)", url: "https://anytime-soccer.com/1001-ball-mastery-videos-for-soccer-parents-players-new-drills-every-week/" },
+        { name: "Iniesta Move", url: "https://anytime-soccer.com/1001-ball-mastery-videos-for-soccer-parents-players-new-drills-every-week/" },
+        { name: "Dribble Across a Square", url: "https://www.soccerhelp.com/Soccer-Videos-Premium.shtml" },
+        { name: "Push and Blast Off", url: "https://www.soccerhelp.com/Soccer-Videos-Premium.shtml" }
+      ];
+
+      const drillsList = document.getElementById("drillsList");
+      const drillIndex = todayNum % soccerDrills.length;
+      const drill = soccerDrills[drillIndex];
+      drillsList.innerHTML = `<li><a href="${drill.url}" target="_blank">${drill.name}</a></li>`;
+    </script>
 </body>
 </html>

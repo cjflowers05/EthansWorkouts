@@ -1,47 +1,58 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your 99-Day Fitness Goals</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Set Your 99-Day Fitness Goals</title>
   <style>
     body {
-      background: #1a1a1a;
-      color: #e0f0f0;
+      background-color: #1a1a1a;
+      color: #33fff3;
       font-family: -apple-system, sans-serif;
+      margin: 0;
       padding: 1rem;
+    }
+    h1 {
+      text-align: center;
+      color: #33fff3;
+      text-shadow: 0 0 3px #ff33cc;
     }
     textarea {
       width: 100%;
       height: 200px;
-      background: #2c2c2c;
+      background-color: #2c2c2c;
       color: #e0ffe0;
       border: 1px solid #33fff3;
       padding: 1rem;
       border-radius: 8px;
+      font-size: 1rem;
     }
     .btn {
-      background: linear-gradient(to right, #ff33cc, #33fff3);
-      color: black;
+      display: block;
+      margin: 1rem auto;
       padding: 0.5rem 1rem;
+      background: linear-gradient(135deg, #ff33cc, #33fff3);
+      color: #000;
+      font-weight: bold;
       border: none;
       border-radius: 8px;
-      margin-top: 1rem;
-      font-weight: bold;
+      cursor: pointer;
+      text-shadow: 0 0 2px #fff;
     }
   </style>
 </head>
 <body>
-  <h1>Set Your 99-Day Fitness Goals</h1>
-  <textarea id="goalsInput" placeholder="Describe your fitness goals..."></textarea>
-  <br>
-  <button class="btn" onclick="saveGoals()">Save Goals</button>
+  <h1>🎯 Your 99-Day Goal</h1>
+  <textarea id="goalsInput" placeholder="Describe your personal goals, progress aims, or focus areas..."></textarea>
+  <button class="btn" onclick="saveGoals()">💾 Save Goals</button>
+
   <script>
     const textarea = document.getElementById('goalsInput');
     textarea.value = localStorage.getItem('fitnessGoals') || '';
+
     function saveGoals() {
       localStorage.setItem('fitnessGoals', textarea.value);
-      alert('Goals saved!');
+      alert('✅ Goals saved!');
     }
   </script>
 </body>

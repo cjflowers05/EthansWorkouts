@@ -80,28 +80,38 @@
 
   <script>
     function suggestWorkout() {
-      const options = [
-        { name: 'Push-Ups 4x10', difficulty: 'Medium' },
-        { name: 'Pull-Ups 4x6', difficulty: 'Hard' },
-        { name: 'Squats 4x10', difficulty: 'Medium' },
-        { name: 'Deadlifts 4x8', difficulty: 'Hard' },
-        { name: 'Overhead Press 4x10', difficulty: 'Medium' },
-        { name: 'Bent-Over Row 4x10', difficulty: 'Medium' },
-        { name: 'Lunges 4x10 each leg', difficulty: 'Medium' }
+  const options = [
+    { name: 'Push-Ups 4x10', difficulty: 'Medium' },
+    { name: 'Pull-Ups 4x6', difficulty: 'Hard' },
+    { name: 'Squats 4x10', difficulty: 'Medium' },
+    { name: 'Deadlifts 4x8', difficulty: 'Hard' },
+    { name: 'Overhead Press 4x10', difficulty: 'Medium' },
+    { name: 'Bent-Over Row 4x10', difficulty: 'Medium' },
+    { name: 'Lunges 4x10 each leg', difficulty: 'Medium' }
+  ];
+  const shuffled = options.slice().sort(() => Math.random() - 0.5).slice(0, 6);
+  savedWorkout = shuffled;
+  renderWorkout();
+}
       ];
       savedWorkout = options;
       renderWorkout();
     }
 
     function suggestCardio() {
-      const options = [
-        { name: 'Treadmill - 30 min', difficulty: 'Easy' },
-        { name: 'Bike - 30 min', difficulty: 'Easy' },
-        { name: 'Row - 30 min', difficulty: 'Medium' },
-        { name: 'Jump Rope - 10 min', difficulty: 'Medium' },
-        { name: 'Burpees - 4x15', difficulty: 'Hard' },
-        { name: 'Mountain Climbers - 4x30 sec', difficulty: 'Medium' },
-        { name: 'High Knees - 4x1 min', difficulty: 'Medium' }
+  const options = [
+    { name: 'Treadmill - 30 min', difficulty: 'Easy' },
+    { name: 'Bike - 30 min', difficulty: 'Easy' },
+    { name: 'Row - 30 min', difficulty: 'Medium' },
+    { name: 'Jump Rope - 10 min', difficulty: 'Medium' },
+    { name: 'Burpees - 4x15', difficulty: 'Hard' },
+    { name: 'Mountain Climbers - 4x30 sec', difficulty: 'Medium' },
+    { name: 'High Knees - 4x1 min', difficulty: 'Medium' }
+  ];
+  const shuffled = options.slice().sort(() => Math.random() - 0.5).slice(0, 6);
+  savedWorkout = shuffled;
+  renderWorkout();
+}
       ];
       savedWorkout = options;
       renderWorkout();
@@ -231,7 +241,7 @@ function suggestSoccerDrills(type) {
     { name: "Creative Flicks", url: "https://youtu.be/Ng6TC1TwS10", difficulty: "Hard" }
   ]
 };
-  const shuffled = drills[type].slice().sort(() => Math.random() - 0.5);
+  const shuffled = drills[type].slice().sort(() => Math.random() - 0.5).slice(0, 6);
 savedWorkout = shuffled.map(item => typeof item === 'string' ? { name: item, url: '', difficulty: 'Medium' } : item);
   renderWorkout();
 }
@@ -261,7 +271,7 @@ savedWorkout = shuffled.map(item => typeof item === 'string' ? { name: item, url
         workoutList.innerHTML = '<ul>' + savedWorkout.map((e, i) => `
         <li>
           <label><input type="checkbox" onchange="toggleCheck(${i})"> ${e.name} (${e.difficulty || 'Medium'})</label>
-          ${e.url ? `<br><a href="${e.url}" target="_blank">Demo Video</a>` : ''}
+          ${e.url ? `<br><a href="${e.url}" target="_blank">⚽ Demo Video</a>` : ''}
         </li>`).join('') + '</ul>';
       }, 200);
     }

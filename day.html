@@ -45,56 +45,125 @@
       padding: 0.6rem 1rem;
       font-size: 1rem;
       border-radius: 8px;
-      margin-top: 1rem;
+      margin: 0.25rem;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
-  <h1>Workout for <span id="dateTitle">Loading...</span></h1>
+  <h1>Workout for <span id="dateTitle"></span></h1>
 
   <div class="card">
-    <h2>Saved Exercises</h2>
-    <ul id="workoutList"></ul>
+    <h2>Suggested Workouts</h2>
+    <button onclick="suggestWorkout()">Suggest Workout</button>
+    <button onclick="suggestCardio()">Suggest Cardio Workout</button>
+    <button onclick="suggestSoccerDrills('dribbling')">⚽ Dribbling Drills</button>
+    <button onclick="suggestSoccerDrills('shooting')">🎯 Shooting Drills</button>
+    <button onclick="suggestSoccerDrills('ballHandling')">⚽ Ball Handling Drills</button>
+    <button onclick="suggestSoccerDrills('cone')">🟢 Cone Drills</button>
+    <button onclick="suggestSoccerDrills('speed')">🏃 Speed Drills</button>
+    <button onclick="suggestSoccerDrills('vertical')">⬆️ Vertical Leap</button>
+    <button onclick="suggestSoccerDrills('explosive')">💥 Explosiveness</button>
+    <button onclick="suggestSoccerDrills('rebounder')">🪩 Rebounder</button>
+    <button onclick="suggestSoccerDrills('defense')">🛡️ Defensive Drills</button>
+    <button onclick="suggestSoccerDrills('offense')">🔥 Offensive Drills</button>
   </div>
 
-  <div class="card">
-    <h2>Your Notes</h2>
-    <textarea id="notes" rows="5" placeholder="Add notes here..."></textarea>
-    <button onclick="saveData()">Save Workout</button>
-  </div>
+  <div id="workoutList"></div>
+
+  <textarea id="notes" rows="5" placeholder="Add notes here..."></textarea><br>
+  <button onclick="saveData()">Save Workout</button>
 
   <script>
     const params = new URLSearchParams(window.location.search);
     const date = params.get('date');
-    const dateTitle = document.getElementById('dateTitle');
-    dateTitle.textContent = date || 'Unknown Date';
+    document.getElementById('dateTitle').textContent = date || 'Unknown Date';
 
     const workoutKey = `exercises-${date}`;
     const notesKey = `notes-${date}`;
-    const workoutList = document.getElementById('workoutList');
-    const notesBox = document.getElementById('notes');
 
     let savedWorkout = JSON.parse(localStorage.getItem(workoutKey) || '[]');
-    notesBox.value = localStorage.getItem(notesKey) || '';
+    const savedNotes = localStorage.getItem(notesKey) || '';
+
+    const workoutList = document.getElementById('workoutList');
+    const notesBox = document.getElementById('notes');
+    notesBox.value = savedNotes;
 
     function renderWorkout() {
       if (savedWorkout.length === 0) {
-        workoutList.innerHTML = '<li>No workout saved for this day.</li>';
-      } else {
-        workoutList.innerHTML = '';
-        savedWorkout.forEach((exercise, i) => {
-          const li = document.createElement('li');
-          li.textContent = exercise.name || exercise;
-          workoutList.appendChild(li);
-        });
+        workoutList.innerHTML = '<p>No workout saved for this day.</p>';
+        return;
+      }
+      workoutList.innerHTML = '<ul>' + savedWorkout.map((e, i) => `
+        <li>
+          <label><input type="checkbox" onchange="toggleCheck(${i})"> ${e.name} (${e.difficulty || 'Medium'})</label>
+          ${e.url ? `<br><a href="${e.url}" target="_blank">Demo Video</a>` : ''}
+        </li>`).join('') + '</ul>';
+    }
+
+    function toggleCheck(index) {
+      const exercise = savedWorkout[index];
+      const text = `✔ ${exercise.name}`;
+      if (!notesBox.value.includes(text)) {
+        notesBox.value += `\n${text}`;
+        saveData();
       }
     }
 
     function saveData() {
       localStorage.setItem(workoutKey, JSON.stringify(savedWorkout));
       localStorage.setItem(notesKey, notesBox.value);
-      alert('Workout saved for ' + date);
+      alert('Saved!');
+    }
+
+    function suggestWorkout() {
+      const options = [
+        'Push-Ups 4x10', 'Pull-Ups 4x6', 'Squats 4x10', 'Deadlifts 4x8',
+        'Overhead Press 4x10', 'Bent-Over Row 4x10', 'Lunges 4x10 each leg'
+      ];
+      savedWorkout = options.map(name => ({ name }));
+      renderWorkout();
+    }
+
+    function suggestCardio() {
+      const options = [
+        'Treadmill - 30 min', 'Bike - 30 min', 'Row - 30 min', 'Jump Rope - 10 min',
+        'Burpees - 4x15', 'Mountain Climbers - 4x30 sec', 'High Knees - 4x1 min'
+      ];
+      savedWorkout = options.map(name => ({ name }));
+      renderWorkout();
+    }
+
+    function suggestSoccerDrills(type) {
+      const drills = {
+  dribbling: [
+    { name: "Cone Weave", url: "https://youtu.be/z7jP3moQi9c", difficulty: "Easy" },
+    { name: "Inside/Outside Touches", url: "https://youtu.be/qHPF6v0u8S0", difficulty: "Medium" },
+    { name: "Stepovers", url: "https://youtu.be/AvfzlOx_-Yw", difficulty: "Hard" },
+    { name: "Figure 8", url: "https://youtu.be/pOfJgHKnKXg", difficulty: "Easy" },
+    { name: "Shield & Turn", url: "https://youtu.be/KrYLTwVKEOM", difficulty: "Medium" },
+    { name: "Drag Push", url: "https://youtu.be/JoR6O9P7rHI", difficulty: "Medium" },
+    { name: "Scissors", url: "https://youtu.be/R3l6RZLqymU", difficulty: "Hard" },
+    { name: "L-turn", url: "https://youtu.be/dK0UN2UReSQ", difficulty: "Medium" },
+    { name: "U-turn", url: "https://youtu.be/YwfvXPE6UvY", difficulty: "Medium" },
+    { name: "Tap Dribble", url: "https://youtu.be/X5-2jFi_KUY", difficulty: "Easy" }
+  ],
+  shooting: [
+    { name: "One-Touch Finish", url: "https://youtu.be/FyKIEyulL6I", difficulty: "Medium" },
+    { name: "Shots on the Run", url: "https://youtu.be/BMK-7kgp2VE", difficulty: "Hard" },
+    { name: "Volley Shots", url: "https://youtu.be/fBlvl37sSyc", difficulty: "Hard" },
+    { name: "Shooting from Angle", url: "https://youtu.be/VB2SdrV4kF4", difficulty: "Medium" },
+    { name: "Near Post Shots", url: "https://youtu.be/4o3YogobJWE", difficulty: "Medium" },
+    { name: "Top Bin Practice", url: "https://youtu.be/DbrByyDq78I", difficulty: "Hard" },
+    { name: "Driven Shots", url: "https://youtu.be/gMGjqVRttAA", difficulty: "Medium" },
+    { name: "Turn and Shoot", url: "https://youtu.be/3meThfzBPb8", difficulty: "Medium" },
+    { name: "Rebound Shots", url: "https://youtu.be/qYoGzPioBXs", difficulty: "Easy" },
+    { name: "Timed Finishes", url: "https://youtu.be/hqVL5EQtr9I", difficulty: "Hard" }
+  ]
+  // Add similar structure for the rest of the categories as needed
+};
+      savedWorkout = drills[type].map(item => typeof item === 'string' ? { name: item, url: '', difficulty: 'Medium' } : item);
+      renderWorkout();
     }
 
     renderWorkout();

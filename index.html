@@ -84,6 +84,10 @@ $1
   <header>Ethan's Soccer & Workout Journal</header>
   <div class="container">
     <div class="card">
+      <h2>⚽ Quote of the Day</h2>
+      <p id="quoteOfDay">Loading...</p>
+    </div>
+    <div class="card">
       <h2>🎯 Plan Goal</h2>
       <a href="goals.html" class="btn">Set Your 365-Day Goals</a>
     </div>
@@ -96,10 +100,12 @@ $1
     <div class="card">
       <h2>📆 365-Day Workout Calendar</h2>
       <div id="calendarContainer"></div>
+    $1
+    <div class="card">
+      <h2>🏁 Final Quote of the Year</h2>
+      <p id="finalQuote">You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi</p>
     </div>
-  </div>
-
-  <script>
+<script>
     const startDate = new Date('2025-06-01');
     const today = new Date();
     const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
@@ -107,36 +113,41 @@ $1
     const calendarContainer = document.getElementById("calendarContainer");
     const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
-    for (let month = 0; month < 12; month++) {
-      const monthCard = document.createElement("div");
-      monthCard.className = "card";
-      const title = document.createElement("h3");
-      title.textContent = monthNames[month];
-      monthCard.appendChild(title);
+    let totalDays = 0;
+let startYear = 2025;
+let numYears = 2;
 
-      const grid = document.createElement("div");
-      grid.className = "calendar-grid";
+for (let y = 0; y < numYears; y++) {
+  const year = startYear + y;
+  for (let month = 0; month < 12; month++) {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const monthCard = document.createElement("div");
+    monthCard.className = "card";
+    const title = document.createElement("h3");
+    title.textContent = `${monthNames[month]} ${year}`;
+    monthCard.appendChild(title);
 
-      const daysInMonth = new Date(2025, month + 1, 0).getDate();
-      const dayStart = month === 0 ? 1 : Array.from(calendarContainer.querySelectorAll(".calendar-cell")).length + 1;
+    const grid = document.createElement("div");
+    grid.className = "calendar-grid";
 
-      for (let d = 0; d < daysInMonth; d++) {
-        const dayNum = dayStart + d;
-        if (dayNum > 365) break;
+    for (let d = 1; d <= daysInMonth; d++) {
+      totalDays++;
+      if (totalDays > 730) break;
 
-        const cell = document.createElement("div");
-        cell.className = "btn calendar-cell";
-        const completed = localStorage.getItem(`completed-${dayNum}`);
-        if (dayNum === todayNum) cell.classList.add("today");
-        if (completed) cell.classList.add("completed");
-        cell.textContent = dayNum;
-        cell.onclick = () => window.location.href = `day.html?day=${dayNum}`;
-        grid.appendChild(cell);
-      }
-
-      monthCard.appendChild(grid);
-      calendarContainer.appendChild(monthCard);
+      const cell = document.createElement("div");
+      cell.className = "btn calendar-cell";
+      const completed = localStorage.getItem(`completed-${totalDays}`);
+      if (totalDays === todayNum) cell.classList.add("today");
+      if (completed) cell.classList.add("completed");
+      cell.textContent = totalDays;
+      cell.onclick = () => window.location.href = `day.html?day=${totalDays}`;
+      grid.appendChild(cell);
     }
+
+    monthCard.appendChild(grid);
+    calendarContainer.appendChild(monthCard);
+  }
+}
 
     const summaryEl = document.getElementById("todaySummary");
     const summaryKey = `exercises-${todayNum}`;
@@ -149,6 +160,22 @@ $1
     } else {
       summaryEl.textContent = "No workouts currently added";
     }
+  
+    const soccerQuotes = [
+      "The more difficult the victory, the greater the happiness in winning. – Pelé",
+      "Success is no accident. It is hard work, perseverance, learning, studying, sacrifice and most of all, love of what you are doing. – Pelé",
+      "Every disadvantage has its advantage. – Johan Cruyff",
+      "The ball is round, the game lasts ninety minutes, and everything else is just theory. – Sepp Herberger",
+      "I don't believe skill was, or ever will be, the result of coaches. It is a result of a love affair between the child and the ball. – Roy Keane",
+      "You have to fight to reach your dream. You have to sacrifice and work hard for it. – Lionel Messi",
+      "If you do not believe you can do it then you have no chance at all. – Arsène Wenger",
+      "I learned all about life with a ball at my feet. – Ronaldinho",
+      "Some people believe football is a matter of life and death. I can assure you it is much, much more important than that. – Bill Shankly",
+      "You have to play with fear and passion. – Eric Cantona"
+    ];
+
+    const quoteIndex = todayNum % soccerQuotes.length;
+    document.getElementById("quoteOfDay").textContent = soccerQuotes[quoteIndex];
   </script>
 </body>
 </html>

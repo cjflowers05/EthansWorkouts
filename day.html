@@ -48,6 +48,10 @@
       margin: 0.25rem;
       cursor: pointer;
     }
+      .fade-out {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -73,50 +77,8 @@
 
   <textarea id="notes" rows="5" placeholder="Add notes here..."></textarea><br>
   <button onclick="saveData()">Save Workout</button>
-  <br><button onclick="window.location.href='index.html'">🏠 Back to Home</button>
 
   <script>
-    const params = new URLSearchParams(window.location.search);
-    const date = params.get('date');
-    document.getElementById('dateTitle').textContent = date || 'Unknown Date';
-
-    const workoutKey = `exercises-${date}`;
-    const notesKey = `notes-${date}`;
-
-    let savedWorkout = JSON.parse(localStorage.getItem(workoutKey) || '[]');
-    const savedNotes = localStorage.getItem(notesKey) || '';
-
-    const workoutList = document.getElementById('workoutList');
-    const notesBox = document.getElementById('notes');
-    notesBox.value = savedNotes;
-
-    function renderWorkout() {
-      if (savedWorkout.length === 0) {
-        workoutList.innerHTML = '<p>No workout saved for this day.</p>';
-        return;
-      }
-      workoutList.innerHTML = '<ul>' + savedWorkout.map((e, i) => `
-        <li>
-          <label><input type="checkbox" onchange="toggleCheck(${i})"> ${e.name} (${e.difficulty || 'Medium'})</label>
-          ${e.url ? `<br><a href="${e.url}" target="_blank">Demo Video</a>` : ''}
-        </li>`).join('') + '</ul>';
-    }
-
-    function toggleCheck(index) {
-      const exercise = savedWorkout[index];
-      const text = `✔ ${exercise.name}`;
-      if (!notesBox.value.includes(text)) {
-        notesBox.value += `\n${text}`;
-        saveData();
-      }
-    }
-
-    function saveData() {
-      localStorage.setItem(workoutKey, JSON.stringify(savedWorkout));
-      localStorage.setItem(notesKey, notesBox.value);
-      alert('Saved!');
-    }
-
     function suggestWorkout() {
       const options = [
         { name: 'Push-Ups 4x10', difficulty: 'Medium' },
@@ -144,16 +106,181 @@
       savedWorkout = options;
       renderWorkout();
     }
+  </script>
+<script>
+function suggestSoccerDrills(type) {
+  const drills = {
+  dribbling: [
+    { name: "Cone Weave", url: "https://youtu.be/z7jP3moQi9c", difficulty: "Easy" },
+    { name: "Inside/Outside Touches", url: "https://youtu.be/qHPF6v0u8S0", difficulty: "Medium" },
+    { name: "Stepovers", url: "https://youtu.be/AvfzlOx_-Yw", difficulty: "Hard" },
+    { name: "Figure 8", url: "https://youtu.be/pOfJgHKnKXg", difficulty: "Easy" },
+    { name: "Shield & Turn", url: "https://youtu.be/KrYLTwVKEOM", difficulty: "Medium" },
+    { name: "Drag Push", url: "https://youtu.be/JoR6O9P7rHI", difficulty: "Medium" },
+    { name: "Scissors", url: "https://youtu.be/R3l6RZLqymU", difficulty: "Hard" },
+    { name: "L-turn", url: "https://youtu.be/dK0UN2UReSQ", difficulty: "Medium" },
+    { name: "U-turn", url: "https://youtu.be/YwfvXPE6UvY", difficulty: "Medium" },
+    { name: "Tap Dribble", url: "https://youtu.be/X5-2jFi_KUY", difficulty: "Easy" }
+  ],
+  shooting: [
+    { name: "One-Touch Finish", url: "https://youtu.be/FyKIEyulL6I", difficulty: "Medium" },
+    { name: "Shots on the Run", url: "https://youtu.be/BMK-7kgp2VE", difficulty: "Hard" },
+    { name: "Volley Shots", url: "https://youtu.be/fBlvl37sSyc", difficulty: "Hard" },
+    { name: "Shooting from Angle", url: "https://youtu.be/VB2SdrV4kF4", difficulty: "Medium" },
+    { name: "Near Post Shots", url: "https://youtu.be/4o3YogobJWE", difficulty: "Medium" },
+    { name: "Top Bin Practice", url: "https://youtu.be/DbrByyDq78I", difficulty: "Hard" },
+    { name: "Driven Shots", url: "https://youtu.be/gMGjqVRttAA", difficulty: "Medium" },
+    { name: "Turn and Shoot", url: "https://youtu.be/3meThfzBPb8", difficulty: "Medium" },
+    { name: "Rebound Shots", url: "https://youtu.be/qYoGzPioBXs", difficulty: "Easy" },
+    { name: "Timed Finishes", url: "https://youtu.be/hqVL5EQtr9I", difficulty: "Hard" }
+  ],
+  ballHandling: [
+    { name: "Toe Touches", url: "https://youtu.be/CK4J5S2L46E", difficulty: "Easy" },
+    { name: "Foundations", url: "https://youtu.be/y2U6lvdDa1Q", difficulty: "Easy" },
+    { name: "V-pull", url: "https://youtu.be/nW-Nq3bWVwM", difficulty: "Medium" },
+    { name: "Roll Pull", url: "https://youtu.be/Z9GpIevKOtY", difficulty: "Medium" },
+    { name: "Drag Back", url: "https://youtu.be/IYrguQilv2M", difficulty: "Easy" },
+    { name: "Triangle Touch", url: "https://youtu.be/wTLgfk25D2U", difficulty: "Medium" },
+    { name: "Inside Cut", url: "https://youtu.be/TD6ekVvj5X4", difficulty: "Medium" },
+    { name: "Outside Cut", url: "https://youtu.be/f3J9a4NwXhI", difficulty: "Medium" },
+    { name: "Roll Over", url: "https://youtu.be/xs2-KHaaBqs", difficulty: "Hard" },
+    { name: "Push Pull", url: "https://youtu.be/1qUuRff32vY", difficulty: "Medium" }
+  ],
+  cone: [
+    { name: "Cone Slalom", url: "https://youtu.be/3yCtvUHVy2s", difficulty: "Easy" },
+    { name: "T-Drill", url: "https://youtu.be/VuXEZT68ZQQ", difficulty: "Medium" },
+    { name: "Box Dribble", url: "https://youtu.be/y9_buI7L4Mg", difficulty: "Easy" },
+    { name: "Forward Zigzag", url: "https://youtu.be/Ng-lfd5-0Zg", difficulty: "Easy" },
+    { name: "Ladder Step", url: "https://youtu.be/ixTwbFReo0A", difficulty: "Medium" },
+    { name: "Quick Step", url: "https://youtu.be/HRgnrYjjvPY", difficulty: "Medium" },
+    { name: "Triangle Weave", url: "https://youtu.be/y9XxdKowF0Q", difficulty: "Medium" },
+    { name: "Around the World", url: "https://youtu.be/af5fL3Tljxk", difficulty: "Medium" },
+    { name: "Cone Circle", url: "https://youtu.be/g_0nYlUJqMQ", difficulty: "Hard" },
+    { name: "Diagonal Cone Sprint", url: "https://youtu.be/AcV8_lN5fqs", difficulty: "Medium" }
+  ],
+  speed: [
+    { name: "Sprint Intervals", url: "https://youtu.be/fvE4sxpF3_M", difficulty: "Medium" },
+    { name: "40 Yard Dash", url: "https://youtu.be/FKmuNn9v7AE", difficulty: "Hard" },
+    { name: "Acceleration Drills", url: "https://youtu.be/gJhXXr8o-Gk", difficulty: "Medium" },
+    { name: "Cone Repeats", url: "https://youtu.be/xvfw_1USblU", difficulty: "Medium" },
+    { name: "Treadmill Sprint", url: "https://youtu.be/tX_FMc7ytks", difficulty: "Medium" },
+    { name: "Mini Hurdles", url: "https://youtu.be/4tR2IQg3hJQ", difficulty: "Medium" },
+    { name: "Agility Ladder", url: "https://youtu.be/L1iC1p25rM8", difficulty: "Easy" },
+    { name: "Backpedal Sprints", url: "https://youtu.be/44ciEtKxGVo", difficulty: "Medium" },
+    { name: "Shuttle Runs", url: "https://youtu.be/cRSnRWbdXYs", difficulty: "Hard" },
+    { name: "Staggered Starts", url: "https://youtu.be/kE6xGPZ3XHc", difficulty: "Hard" }
+  ],
+  vertical: [
+    { name: "Box Jumps", url: "https://youtu.be/52rU2kDKg3Q", difficulty: "Hard" },
+    { name: "Tuck Jumps", url: "https://youtu.be/b0PmJQ5nT0A", difficulty: "Medium" },
+    { name: "Depth Jumps", url: "https://youtu.be/NQqGbSjZUR0", difficulty: "Hard" },
+    { name: "Jump Lunges", url: "https://youtu.be/MgnWTqZVgQs", difficulty: "Medium" },
+    { name: "Single Leg Hops", url: "https://youtu.be/5tZoWB5BIgw", difficulty: "Medium" },
+    { name: "Broad Jumps", url: "https://youtu.be/F9Uc8Stw2z4", difficulty: "Medium" },
+    { name: "Knee Tuck", url: "https://youtu.be/4ZbwOn0pX24", difficulty: "Medium" },
+    { name: "Squat Jumps", url: "https://youtu.be/46_6aNoq1bI", difficulty: "Easy" },
+    { name: "Vertical Reach", url: "https://youtu.be/zldgkUlD9nY", difficulty: "Medium" },
+    { name: "Wall Touch", url: "https://youtu.be/oM6Y0epL_KM", difficulty: "Medium" }
+  ],
+  explosive: [
+    { name: "Burpees", url: "https://youtu.be/qLBImHhCXSw", difficulty: "Medium" },
+    { name: "Kettlebell Swings", url: "https://youtu.be/YSxQxZzTBlg", difficulty: "Medium" },
+    { name: "Power Cleans", url: "https://youtu.be/oQ37L3fUJlU", difficulty: "Hard" },
+    { name: "Medicine Ball Slam", url: "https://youtu.be/EaB6LpX6hvI", difficulty: "Medium" },
+    { name: "Sprint Bounds", url: "https://youtu.be/SWwDXKTZJek", difficulty: "Medium" },
+    { name: "Plyo Pushups", url: "https://youtu.be/4Bh7ft5ZyK0", difficulty: "Hard" },
+    { name: "Explosive Step Up", url: "https://youtu.be/qDj5ut4rp3o", difficulty: "Medium" },
+    { name: "Resisted Sprint", url: "https://youtu.be/y3v0xrFcEOg", difficulty: "Hard" },
+    { name: "Depth Jump + Sprint", url: "https://youtu.be/MY5jr4S6lY8", difficulty: "Hard" },
+    { name: "Lunge to Hop", url: "https://youtu.be/jZZTXAf0U_Y", difficulty: "Medium" }
+  ],
+  rebounder: [
+    { name: "Wall Passes", url: "https://youtu.be/VeAMq6eR_9c", difficulty: "Easy" },
+    { name: "Two-Touch Pass", url: "https://youtu.be/AQm6vde_R7o", difficulty: "Medium" },
+    { name: "Volley Return", url: "https://youtu.be/_gFz5oLQktI", difficulty: "Medium" },
+    { name: "Left/Right Pass", url: "https://youtu.be/qQwW1kCrZas", difficulty: "Medium" },
+    { name: "Side Pass Sprint", url: "https://youtu.be/xDFRk9OLaWE", difficulty: "Medium" },
+    { name: "Pass Control Turn", url: "https://youtu.be/_5Mk1evRtCI", difficulty: "Medium" },
+    { name: "Backpass Recovery", url: "https://youtu.be/h8jNfa-KjIM", difficulty: "Medium" },
+    { name: "Head Pass Rebound", url: "https://youtu.be/DcnfCtqa0to", difficulty: "Medium" },
+    { name: "Rebound Shoot", url: "https://youtu.be/IplRUC63TeA", difficulty: "Hard" },
+    { name: "Quick Return Flick", url: "https://youtu.be/sm3cSDHqk1A", difficulty: "Hard" }
+  ],
+  defense: [
+    { name: "1v1 Pressure", url: "https://youtu.be/Ky7FGpry1TQ", difficulty: "Medium" },
+    { name: "Jockey Drill", url: "https://youtu.be/WKgfBgkkc5E", difficulty: "Medium" },
+    { name: "Slide Tackle Form", url: "https://youtu.be/Z_KOtEVq2RY", difficulty: "Hard" },
+    { name: "Close Down Angle", url: "https://youtu.be/NHOlKDgKT08", difficulty: "Medium" },
+    { name: "Backpedal Practice", url: "https://youtu.be/YM0S39PCeMw", difficulty: "Medium" },
+    { name: "Block Shot Timing", url: "https://youtu.be/T9TiI5KnshE", difficulty: "Hard" },
+    { name: "Cut Pass Drill", url: "https://youtu.be/dCVNPRAu5Qc", difficulty: "Medium" },
+    { name: "Ball Steal Drill", url: "https://youtu.be/t3lmWBVYxMQ", difficulty: "Hard" },
+    { name: "Delay Drill", url: "https://youtu.be/BHJtzXIfRtY", difficulty: "Medium" },
+    { name: "Step & Challenge", url: "https://youtu.be/_F0fvAWvAgA", difficulty: "Medium" }
+  ],
+  offense: [
+    { name: "Give-and-Go", url: "https://youtu.be/uef1djULgZg", difficulty: "Medium" },
+    { name: "Diagonal Run Finish", url: "https://youtu.be/GWPSvVezyNA", difficulty: "Medium" },
+    { name: "Wall Pass Attack", url: "https://youtu.be/Of2BHOHkZq8", difficulty: "Medium" },
+    { name: "Overlap Move", url: "https://youtu.be/w_EpOC_Nv-8", difficulty: "Medium" },
+    { name: "Final Third Movement", url: "https://youtu.be/RtZAwYtFc1E", difficulty: "Hard" },
+    { name: "Quick Combo Pass", url: "https://youtu.be/UZhM0NeqQ34", difficulty: "Medium" },
+    { name: "Off-the-Ball Sprint", url: "https://youtu.be/UW_g6ffOPNg", difficulty: "Medium" },
+    { name: "Backdoor Cut", url: "https://youtu.be/hfgHXLyqBQ8", difficulty: "Hard" },
+    { name: "Hold Up Play", url: "https://youtu.be/S1RS-Kb1RRc", difficulty: "Medium" },
+    { name: "Creative Flicks", url: "https://youtu.be/Ng6TC1TwS10", difficulty: "Hard" }
+  ]
+};
+  const shuffled = drills[type].slice().sort(() => Math.random() - 0.5);
+savedWorkout = shuffled.map(item => typeof item === 'string' ? { name: item, url: '', difficulty: 'Medium' } : item);
+  renderWorkout();
+}
 
-    function suggestSoccerDrills(type) {
-      const drills = {
-        // All your soccer drills go here (already in your code)
-      };
-      savedWorkout = drills[type].map(item => typeof item === 'string' ? { name: item, url: '', difficulty: 'Medium' } : item);
-      renderWorkout();
+    const params = new URLSearchParams(window.location.search);
+    const date = params.get('date');
+    document.getElementById('dateTitle').textContent = date || 'Unknown Date';
+
+    const workoutKey = `exercises-${date}`;
+    const notesKey = `notes-${date}`;
+
+    let savedWorkout = JSON.parse(localStorage.getItem(workoutKey) || '[]');
+    const savedNotes = localStorage.getItem(notesKey) || '';
+
+    const workoutList = document.getElementById('workoutList');
+    const notesBox = document.getElementById('notes');
+    notesBox.value = savedNotes;
+
+    function renderWorkout() {
+      if (savedWorkout.length === 0) {
+        workoutList.innerHTML = '<p>No workout saved for this day.</p>';
+        return;
+      }
+      workoutList.classList.add('fade-out');
+      setTimeout(() => {
+        workoutList.classList.remove('fade-out');
+        workoutList.innerHTML = '<ul>' + savedWorkout.map((e, i) => `
+        <li>
+          <label><input type="checkbox" onchange="toggleCheck(${i})"> ${e.name} (${e.difficulty || 'Medium'})</label>
+          ${e.url ? `<br><a href="${e.url}" target="_blank">Demo Video</a>` : ''}
+        </li>`).join('') + '</ul>';
+      }, 200);
     }
 
-    renderWorkout();
+    function toggleCheck(index) {
+      const exercise = savedWorkout[index];
+      const text = `✔ ${exercise.name}`;
+      if (!notesBox.value.includes(text)) {
+        notesBox.value += `\n${text}`;
+        saveData();
+      }
+    }
+
+    function saveData() {
+      localStorage.setItem(workoutKey, JSON.stringify(savedWorkout));
+      localStorage.setItem(notesKey, notesBox.value);
+      alert('Saved!');
+    }
   </script>
+  <br><button onclick="window.location.href='index.html'">🏠 Back to Home</button>
 </body>
 </html>

@@ -1,64 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
-<head><html lang="en">
 <head>
-<link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#121212" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<link rel="apple-touch-icon" href="icons/icon-192.png" />
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My 90-Day Fit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Ethan's Soccer & Workout Journal</title>
   <style>
     body {
+      background-color: #1a1a1a;
+      color: #e0f0f0;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-      background-color: #121212;
-      color: #fff;
+      padding: 1rem;
     }
     header {
-      background-color: #1e1e1e;
+      background-color: #2a2a2a;
       padding: 1rem;
       text-align: center;
-      color: #ff3c3c;
-      font-size: 1.5rem;
-      position: relative;
-    }
-    header img {
-      position: absolute;
-      top: 0.25rem;
-      left: 0.5rem;
-      height: 40px;
+      color: #ff33cc;
+      font-size: 1.75rem;
+      font-weight: bold;
+      border-bottom: 2px solid #33fff3;
+      text-shadow: 0 0 4px #fff;
     }
     .container {
       padding: 1rem;
-      max-width: 800px;
-      margin: 0 auto;
     }
     .card {
-      background-color: #1f1f1f;
+      background-color: #2c2c2c;
       border-radius: 12px;
       padding: 1rem;
       margin-bottom: 1rem;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 5px rgba(0,255,150,0.2);
     }
     .btn {
-      background-color: #ff3c3c;
-      border: none;
-      color: white;
+      background-image: linear-gradient(135deg, #ff33cc, #33fff3);
+      color: #000;
       padding: 0.5rem 1rem;
+      border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-size: 1rem;
+      font-weight: bold;
+      text-shadow: 0 0 2px #fff;
       margin-top: 0.5rem;
-    }
-    .btn.secondary {
-      background-color: #333;
-      margin-left: 0.5rem;
-    }
-    .btn.secondary:hover {
-      background-color: #555;
     }
     .calendar-grid {
       display: grid;
@@ -66,225 +49,111 @@
       gap: 0.5rem;
     }
     .calendar-cell {
-      background-color: #ff3c3c;
+      background-color: #ff33cc;
       padding: 0.75rem;
       text-align: center;
       border-radius: 6px;
       font-size: 0.9rem;
       cursor: pointer;
+      color: white;
     }
-    .calendar-cell:hover {
-      outline: 2px solid #ff3c3c;
+    .calendar-cell.completed {
+      background-color: #33ff66;
     }
-    .rest-day {
-      background-color: #444 !important;
+    .calendar-cell.today {
+      border: 2px solid #33fff3;
     }
-    footer {
-      text-align: center;
+    textarea {
+      width: 100%;
+      height: 100px;
+      background: #2c2c2c;
+      color: #e0ffe0;
+      border: 1px solid #33fff3;
       padding: 1rem;
-      color: #888;
+      margin-top: 1rem;
+      border-radius: 8px;
     }
-    @media (max-width: 500px) {
-      .calendar-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
+    h2 {
+      color: #33fff3;
     }
-</style>
+    .summary-text {
+      color: #e0ffe0;
+    }
+  </style>
 </head>
 <body>
-  <header>
-    <img src="icons/icon-192.png">
-    Welcome, CJ
-  </header>
-
+  <header>Ethan's Soccer & Workout Journal</header>
   <div class="container">
-    <div class="card nickname-card">Clone Trooper: CT9921</div>
-
     <div class="card">
-      <h2>Today's Workout</h2>
-      <div id="todayWorkout"></div>
-      <button class="btn" onclick="markComplete()">Mark as Complete</button>
+      <h2>🎯 Plan Goal</h2>
+      <a href="goals.html" class="btn">Set Your 99-Day Goals</a>
     </div>
 
     <div class="card">
-      <h2>Workout Timer</h2>
-      <div class="timer" id="workoutTimer">00:00</div>
-      <button class="btn" onclick="startTimer()">Start</button>
-      <button class="btn secondary" onclick="pauseTimer()">Pause</button>
-      <button class="btn secondary" onclick="resetTimer()">Reset</button>
+      <h2>📋 Today's Workout Summary</h2>
+      <div id="todaySummary">Loading...</div>
     </div>
 
     <div class="card">
-      <h2>This Week</h2>
-      <div class="calendar-grid" id="weekCalendar"></div>
-      <div id="dayDetails"></div>
+      <h2>🛌 Rest Day Editor</h2>
+      <p>Select your rest days (click to toggle):</p>
+      <div class="calendar-grid" id="restDayEditor"></div>
     </div>
 
     <div class="card">
-      <h2>90 Day Calendar</h2>
-      <div class="calendar-grid" id="calendar90"></div>
-    </div>
-
-    <div class="card">
-      <h2>Progress</h2>
-      <p id="progressLog">Workouts Completed: 0</p>
-    </div>
-
-    <div class="card">
-      <h2>Manage Workouts</h2>
-      <button class="btn" onclick="addNewWorkout()">Add Custom Workout</button>
-      <button class="btn secondary" onclick="promptEditWorkout()">Edit Existing Workout</button>
-      <select class="btn secondary" id="viewWorkoutSelector" onchange="displayWorkoutDetails()">
-        <option value="">View Custom Workout</option>
-      </select>
-      <ul id="customWorkoutDisplay"></ul>
+      <h2>📆 Workout Calendar</h2>
+      <div class="calendar-grid" id="calendarGrid"></div>
     </div>
   </div>
 
-  <footer>
-    &copy; 2025 CJ's Fitness Journey. All rights reserved.
-  </footer>
-
   <script>
-    // Core workout data
-    const storedWorkouts = localStorage.getItem('customWorkouts');
-    const fullWorkouts = storedWorkouts ? JSON.parse(storedWorkouts) : {
-      'Full Body Strength': ['Goblet Squats - 3x12', 'Dumbbell Press - 3x10', 'Rows with Kettlebell - 3x10', 'Dip Machine - 3x8'],
-      'Cardio + Core': ['Treadmill - 20 min', 'Plank - 3x1 min', 'Russian Twists - 3x20', 'Bicycle Crunches - 3x25'],
-      'Upper Body': ['Dumbbell Shoulder Press - 3x10', 'Bicep Curls - 3x12', 'Triceps Extensions - 3x10', 'Rows - 3x10'],
-      'Lower Body': ['Squats - 3x12', 'Lunges - 3x10 each leg', 'Deadlifts - 3x8', 'Calf Raises - 3x20'],
-      'Rest': ['Rest Day'],
-      'Chest & Back': ['Bench Press - 3x10', 'Pull-Ups - 3x8', 'Incline Dumbbell Press - 3x10', 'Bent Over Rows - 3x10'],
-      'Legs': ['Barbell Squats - 3x10', 'Hamstring Curls - 3x12', 'Leg Press - 3x10', 'Walking Lunges - 3x20 steps'],
-      'Shoulders & Arms': ['Military Press - 3x10', 'Lateral Raises - 3x12', 'Barbell Curls - 3x10', 'Triceps Dips - 3x12'],
-      'Full Body HIIT': ['Jump Squats - 3x15', 'Burpees - 3x15', 'Mountain Climbers - 3x30 sec', 'Kettlebell Swings - 3x15']
-    };
+    const startDate = new Date('2025-06-01');
+    const today = new Date();
+    const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
-    // Progress tracking
-    let workoutsCompleted = parseInt(localStorage.getItem('workoutsCompleted') || '0');
-    document.getElementById('progressLog').textContent = `Workouts Completed: ${workoutsCompleted}`;
-    function markComplete() {
-      workoutsCompleted++;
-      localStorage.setItem('workoutsCompleted', workoutsCompleted);
-      document.getElementById('progressLog').textContent = `Workouts Completed: ${workoutsCompleted}`;
-    }
+    const calendarGrid = document.getElementById("calendarGrid");
+    const restEditor = document.getElementById("restDayEditor");
+    const restDays = JSON.parse(localStorage.getItem("rest-days") || "[]");
 
-    // Timer
-    let timerInterval;
-    let seconds = 0;
-    function startTimer() {
-      if (timerInterval) return;
-      timerInterval = setInterval(() => {
-        seconds++;
-        updateTimerDisplay();
-      }, 1000);
-    }
-    function pauseTimer() {
-      clearInterval(timerInterval);
-      timerInterval = null;
-    }
-    function resetTimer() {
-      pauseTimer();
-      seconds = 0;
-      updateTimerDisplay();
-    }
-    function updateTimerDisplay() {
-      const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const secs = (seconds % 60).toString().padStart(2, '0');
-      document.getElementById('workoutTimer').textContent = `${mins}:${secs}`;
-    }
+    const totalDays = todayNum + 30; // show 30 days beyond today
 
-    // Weekly plan
-    const weekPlan = [
-      { day: 'Mon', workout: 'Chest & Back' },
-      { day: 'Tue', workout: 'Legs' },
-      { day: 'Wed', workout: 'Cardio + Core' },
-      { day: 'Thu', workout: 'Rest' },
-      { day: 'Fri', workout: 'Shoulders & Arms' },
-      { day: 'Sat', workout: 'Full Body HIIT' },
-      { day: 'Sun', workout: 'Rest' },
-    ];
-    const weekCalendar = document.getElementById('weekCalendar');
-    const dayDetails = document.getElementById('dayDetails');
-    weekPlan.forEach(({ day, workout }) => {
-      const cell = document.createElement('div');
-      cell.className = `calendar-cell ${workout === 'Rest' ? 'rest-day' : ''}`;
-      cell.textContent = day;
-      cell.onclick = () => {
-        dayDetails.innerHTML = `<h3>${day} - ${workout}</h3><ul>` +
-          (fullWorkouts[workout] || []).map(ex => `<li>${ex}</li>`).join('') +
-          `</ul>`;
-      };
-      weekCalendar.appendChild(cell);
-    });
-
-    // Display today's workout
-    const today = new Date().getDay(); // 0 (Sun) to 6 (Sat)
-    const todayWorkoutName = weekPlan[today]?.workout || 'Rest';
-    const todayWorkout = fullWorkouts[todayWorkoutName] || ['Rest'];
-    document.getElementById('todayWorkout').innerHTML = `<h3>${todayWorkoutName}</h3><ul>` +
-      todayWorkout.map(ex => `<li>${ex}</li>`).join('') + '</ul>';
-
-    // 90 Day Calendar
-    const calendar90 = document.getElementById('calendar90');
-    for (let i = 1; i <= 90; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'calendar-cell';
+    for (let i = 1; i <= totalDays; i++) {
+      const cell = document.createElement("div");
+      cell.className = "calendar-cell";
+      const completed = localStorage.getItem(`completed-${i}`);
+      if (i === todayNum) cell.classList.add("today");
+      if (completed) cell.classList.add("completed");
       cell.textContent = i;
-      if ((i % 7 === 4) || (i % 7 === 0)) {
-        cell.classList.add('rest-day');
-      }
-      calendar90.appendChild(cell);
+      cell.onclick = () => window.location.href = `day.html?day=${i}`;
+      calendarGrid.appendChild(cell);
+
+      const restCell = document.createElement("div");
+      restCell.className = "calendar-cell";
+      restCell.textContent = i;
+      if (restDays.includes(i)) restCell.style.backgroundColor = '#888';
+      restCell.onclick = () => {
+        if (restDays.includes(i)) {
+          restDays.splice(restDays.indexOf(i), 1);
+        } else {
+          restDays.push(i);
+        }
+        localStorage.setItem("rest-days", JSON.stringify(restDays));
+        restCell.style.backgroundColor = restDays.includes(i) ? '#888' : '#ff33cc';
+      };
+      restEditor.appendChild(restCell);
     }
 
-    // Manage Custom Workouts
-    function addNewWorkout() {
-      const name = prompt("Enter workout name:");
-      if (!name) return;
-      const exercises = prompt("Enter exercises separated by commas:");
-      if (!exercises) return;
-      fullWorkouts[name] = exercises.split(',').map(e => e.trim());
-      localStorage.setItem('customWorkouts', JSON.stringify(fullWorkouts));
-      updateWorkoutDropdown();
-    }
+    const summaryEl = document.getElementById("todaySummary");
+    const summaryKey = `exercises-${todayNum}`;
+    const notesKey = `notes-${todayNum}`;
+    const workout = JSON.parse(localStorage.getItem(summaryKey) || "null");
+    const notes = localStorage.getItem(notesKey);
 
-    function promptEditWorkout() {
-      const name = prompt("Enter the name of the workout to edit:");
-      if (!name || !fullWorkouts[name]) return alert("Workout not found.");
-      const exercises = prompt("Update exercises (comma separated):", fullWorkouts[name].join(', '));
-      if (!exercises) return;
-      fullWorkouts[name] = exercises.split(',').map(e => e.trim());
-      localStorage.setItem('customWorkouts', JSON.stringify(fullWorkouts));
-      updateWorkoutDropdown();
+    if (workout && workout.length) {
+      summaryEl.innerHTML = `<ul>${workout.map(e => `<li>${e.name}</li>`).join('')}</ul>` + (notes ? `<p><strong>Notes:</strong><br>${notes}</p>` : "");
+    } else {
+      summaryEl.textContent = "No workouts currently added";
     }
-
-    function updateWorkoutDropdown() {
-      const dropdown = document.getElementById('viewWorkoutSelector');
-      dropdown.innerHTML = '<option value="">View Custom Workout</option>';
-      Object.keys(fullWorkouts).forEach(name => {
-        const opt = document.createElement('option');
-        opt.value = name;
-        opt.textContent = name;
-        dropdown.appendChild(opt);
-      });
-    }
-
-    function displayWorkoutDetails() {
-      const workoutName = document.getElementById('viewWorkoutSelector').value;
-      const ul = document.getElementById('customWorkoutDisplay');
-      if (!workoutName || !fullWorkouts[workoutName]) {
-        ul.innerHTML = '';
-        return;
-      }
-      ul.innerHTML = fullWorkouts[workoutName].map(e => `<li>${e}</li>`).join('');
-    }
-
-    updateWorkoutDropdown();
-	if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/service-worker.js');
-  });
-}
   </script>
 </body>
 </html>

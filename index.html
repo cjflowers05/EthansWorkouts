@@ -32,33 +32,19 @@
       margin-bottom: 1rem;
       box-shadow: 0 2px 5px rgba(0,255,150,0.2);
     }
-    .btn {
-      background-image: linear-gradient(135deg, #ff33cc, #33fff3);
-      color: #000;
-      padding: 0.5rem 1rem;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: bold;
-      text-shadow: 0 0 2px #fff;
-      margin-top: 0.5rem;
-      display: inline-block;
-    }
+    $1
+  transition: transform 0.2s ease, box-shadow 0.2s ease;}
     .calendar-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
       gap: 0.5rem;
     }
-    .calendar-cell {
-      background-color: #ff33cc;
-      padding: 0.75rem;
-      text-align: center;
-      border-radius: 6px;
-      font-size: 0.9rem;
-      cursor: pointer;
-      color: #33fff3;
-      text-shadow: 0 0 2px #ff33cc;
-    }
+    $1
+
+.btn.calendar-cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #33fff3, 0 0 20px #ff33cc;
+}
     .calendar-cell.completed {
       background-color: #33ff66;
     }
@@ -73,7 +59,26 @@
       color: #33fff3;
       text-shadow: 0 0 2px #ff33cc;
     }
-  </style>
+  @keyframes pulse {
+  0% { box-shadow: 0 0 0px #ff33cc; }
+  50% { box-shadow: 0 0 12px #ff33cc; }
+  100% { box-shadow: 0 0 0px #ff33cc; }
+}
+
+.btn.calendar-cell.today {
+  animation: pulse 2s infinite;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.calendar-cell.completed {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+$1
 </head>
 <body>
   <header>Ethan's Soccer & Workout Journal</header>
@@ -95,7 +100,7 @@
   </div>
 
   <script>
-    const startDate = new Date('2025-06-06');
+    const startDate = new Date('2025-06-01');
     const today = new Date();
     const todayNum = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
@@ -120,7 +125,7 @@
         if (dayNum > 365) break;
 
         const cell = document.createElement("div");
-        cell.className = "calendar-cell";
+        cell.className = "btn calendar-cell";
         const completed = localStorage.getItem(`completed-${dayNum}`);
         if (dayNum === todayNum) cell.classList.add("today");
         if (completed) cell.classList.add("completed");
